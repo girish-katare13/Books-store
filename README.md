@@ -1,4 +1,5 @@
-![Screenshot (15)](https://github.com/girish-katare13/Books-store/assets/100254272/4cdcc07f-df42-445a-88f8-a715ed61aa06)# Books-store
+# Books-store
+
 Book Store API
 This is a simple REST API for managing a list of books built using Django and Django REST Framework. The API provides endpoints for performing CRUD operations on the book model, along with JWT authentication for securing the API.
 
