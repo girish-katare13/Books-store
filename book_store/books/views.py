@@ -1,15 +1,24 @@
 from django.shortcuts import render
-from rest_framework import generics,status
+from rest_framework import generics, status
 from .models import Book
 from .serializers import BookSerializer
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 # Create your views here.
 
+# Custom TokenObtainPairView for JWT authentication
+class CustomTokenObtainPairView(TokenObtainPairView):
+    pass
+
 # This view handles the listing and creation of Book objects.
 class BookListCreate(generics.ListCreateAPIView):
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
+    authentication_classes = [JWTAuthentication]  # Authenticate users with JWT tokens
+    permission_classes = [IsAuthenticated]  # Ensure that only authenticated users can access this view
+    queryset = Book.objects.all()  # Retrieve all Book objects from the database
+    serializer_class = BookSerializer  # Use the BookSerializer to serialize/deserialize the data
 
     # Handle the HTTP POST request for creating a new Book object.
     def post(self, request, *args, **kwargs):
@@ -24,8 +33,10 @@ class BookListCreate(generics.ListCreateAPIView):
 
 # This view handles the retrieval, updating, and deletion of Book objects.
 class BookRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Book.objects.all()
-    serializer_class = BookSerializer
+    authentication_classes = [JWTAuthentication]  # Authenticate users with JWT tokens
+    permission_classes = [IsAuthenticated]  # Ensure that only authenticated users can access this view
+    queryset = Book.objects.all()  # Retrieve all Book objects from the database
+    serializer_class = BookSerializer  # Use the BookSerializer to serialize/deserialize the data
 
     # Handle the HTTP PUT request for updating an existing Book object.
     def put(self, request, *args, **kwargs):
@@ -43,6 +54,6 @@ class BookRetrieveUpdateDestroy(generics.RetrieveUpdateDestroyAPIView):
     # Handle the HTTP DELETE request for deleting an existing Book object.
     def delete(self, request, *args, **kwargs):
         instance = self.get_object()
-         # Perform the deletion of the specified Book object.
+        # Perform the deletion of the specified Book object.
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
